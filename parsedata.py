@@ -22,10 +22,13 @@ def GetBoundingBoxes(thresh):
             s = int(round(keypoint.size))/2
             bbox = (x-s,y+s,x,y)
             bboxes.append(bbox)
+            
             #cv2.rectangle(frame,(x-s,y+s),(x+s,y-s),(255,0,255),3)
             
             return bboxes
+            
 
+#Saves cropped images ants
 def CollectImages(frame, points):
     count = 1 
     
@@ -36,18 +39,17 @@ def CollectImages(frame, points):
 
  
 
-def nothing(x):
-    pass
 
-
+#Sets up Background Subtraction
 BackgroundSubtrator = cv2.createBackgroundSubtractorMOG2(999, detectShadows=True)
 Parameters = cv2.SimpleBlobDetector_Params()
 
+#Parameters for blob tracking
 Parameters.minThreshold = 0
 Parameters.maxThreshold = 255
 Parameters.filterByArea = True
-Parameters.minArea = 5
-Parameters.maxArea = 20
+Parameters.minArea = 10
+Parameters.maxArea = 50
 Parameters.filterByCircularity = False
 Parameters.filterByInertia = True
 Parameters.filterByConvexity = False
@@ -61,9 +63,10 @@ cap = cv2.VideoCapture('footage.mov')
 
 while True: 
     ret, frame = cap.read()
-    cropped = frame[100:250, 100:250]
+    cropped = frame[100:250, 100:250] #takes part of the image for analysis
     
-    bboxes = GetBoundingBoxes(ImageOperation(cropped))
+    bboxes = [] #bounding boxes for the images from Background subtraction
+    bboxes.append(GetBoundingBoxes(ImageOperation(frame)))
 
     #CollectImages(frame, bboxes)
     
@@ -74,11 +77,13 @@ while True:
     
     cv2.imshow('cropped', cropped)
     cv2.imshow('fgmask', ImageOperation(cropped))
-    cv2.rectangle(frame,(int(bboxes[0][0]), int(bboxes[0][1])),(int(bboxes[0][2]),int(bboxes[0][3])),(255,0,255),3)
-    
 
-   
     print(bboxes)
+
+    #Draws circles around ants (test)
+    if (type(bboxes) is not None): 
+        cv2.circle(frame, (int(bboxes[0][2]), int(bboxes[0[3]])), 50,  (0,0,0), 5)
+
     
     
     k = cv2.waitKey(30) & 0xff
