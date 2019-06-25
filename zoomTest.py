@@ -59,7 +59,7 @@ def MouseCallback(event, x, y, flags, params):
         if (x1 != x2 and y1 != y2):
             AddRect(x1, y1, x2, y2)
  #           DrawAllRects()
-            print(frameRects)
+            
         else:
             print("Not a rectangle!")
             
@@ -71,15 +71,15 @@ def ExpandFrames():
         frameRects.append([])
 
 def DrawRect(rect):
-    cv2.rectangle(getFrameImage(frameNumber), (rect[0], rect[1]), (rect[2], rect[3]), (128, 0, 255), 5)
+    cv2.rectangle(getFrameImage(frameNumber-1), (rect[0], rect[1]), (rect[2], rect[3]), (128, 0, 255), 5)
 
 def DrawAllRects():
-    for rect in frameRects[frameNumber-1]:
+    for rect in frameRects[frameNumber-1]: #index is wrong, might be working backwards (as in from last frame to first)
         print(rect)
         DrawRect(rect)
 
-def SaveRects():
-    for rect in frameRects[frameNumber-1]:
+def SaveRects(): # saves the images
+    for rect in frameRects[frameNumber-1]: #index is wrong
         img = getFrameImage(frameNumber)[rect[0]:rect[2], rect[1]:rect[3    ]]
         cv2.imwrite('antimg' + str(count) + '.jpg' , img)
         print('image ' + str(count) + 'saved')
@@ -91,13 +91,23 @@ cap2 = cv2.VideoCapture('footage.mov')
 ret, frame2 = cap2.read()
 
 cv2.rectangle(frame2, (300, 100), (400, 200), (128, 0, 255), 1)
-cv2.imshow('bruh', frame2)
+
 
 cv2.imshow('ant', getFrameImage(frameNumber))
 
 count = 0 
 
 while(1):
+
+
+    if (frameNumber != lastFrame):
+        cap.set(cv2.CAP_PROP_POS_FRAMES, frameNumber-1)
+        res, frame = cap.read()
+        cv2.imshow('ant', getFrameImage(frameNumber))
+    else:
+        print('bruh stop')
+
+
     cv2.setMouseCallback('ant', MouseCallback)
     k = cv2.waitKey(33)
     if k==27:    # Esc key to stop
@@ -107,24 +117,19 @@ while(1):
     else:
         print("")
 
-    if (frameNumber != lastFrame):
-        cv2.imshow('ant', getFrameImage(frameNumber))
-    else:
-        print('bruh stop')
 
-
+    
     frameDelta = getFrameDelta(k)
     frameNumber = getNextFrame(frameDelta, frameNumber)
     print(frameNumber)
 
-    
-    
+    cv2.imshow('bruh', frame2)
 
-    for rect in frameRects[frameNumber-1]:
+    for rect in frameRects[frameNumber-1]: #works incorrectly 
         print(rect)
         DrawRect(rect)
     
-    SaveRects()
+    SaveRects() #works incorrectly
     count += 1
     
     cv2.waitKey(10)
