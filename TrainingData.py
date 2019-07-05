@@ -7,6 +7,7 @@ frameNum = 0
 
 a = 97
 d = 100
+s = 115
 
 x1=0
 y1=0
@@ -15,6 +16,7 @@ y2=0
 dx=0
 rect=[]
 FrameRects = []
+hoveringIndexes = []
 
 videopath = 'sample.mp4'
 cap = cv2.VideoCapture(videopath)
@@ -60,10 +62,25 @@ def ExpandFrames():
     for i in range(0, lastFrame):
         FrameRects.append([])
 
+def DeleteRects():
+    for i in hoveringIndexes:
+        print(i)
+        FrameRects[frameNum].remove(i)
+        
+        
+
 def MouseCallback(event, x, y, flags, params):
-    global rect, drawing, dx, x1, y1, x2, y2
+    global rect, drawing, dx, x1, y1, x2, y2, mouseX, mouseY, hoveringIndexes
 
     if event == cv2.EVENT_MOUSEMOVE:
+        
+        hoveringIndexes = []
+        for i, _rect in enumerate(FrameRects[frameNum]):
+            if _rect[0][0] <= x <= _rect[1][0] and _rect[1][1] <= y <= _rect[0][1]:
+                hoveringIndexes.append(_rect)
+                print(hoveringIndexes)
+
+        
         if not drawing:
             x1 = x
             y1 = y
@@ -94,12 +111,17 @@ while True:
     
     window = cv2.imread(str(frameNum) + '.jpg')
 
+
+
     if drawing:
         cv2.rectangle(window ,rect[0] ,rect[1] ,(255,0,128) ,3)
 
     for _rect in FrameRects[frameNum]:
-        cv2.rectangle(window ,_rect[0], _rect[1],(0,0,255) ,3)
-
+        if _rect in hoveringIndexes:
+            cv2.rectangle(window ,_rect[0], _rect[1],(255,204,255) ,3)
+        else:
+            cv2.rectangle(window ,_rect[0], _rect[1],(0,0,255) ,3)
+            
 
     cv2.imshow('window' , window)
 
@@ -111,6 +133,10 @@ while True:
     elif k == d:
         if frameNum < lastFrame:
             frameNum +=1
+    elif k == s:
+        print(hoveringIndexes)
+        DeleteRects()
+        print(FrameRects[frameNum])
     elif k==27:    # Esc key to stop
         break
 
