@@ -1,5 +1,8 @@
 import cv2
 import os
+import sys
+
+args = sys.argv
 
 drawing = False
 
@@ -18,22 +21,25 @@ rect=[]
 FrameRects = []
 hoveringIndexes = []
 
-videopath = 'sample.mp4'
-cap = cv2.VideoCapture(videopath)
+videoPath = args[1]
+imagesPath = args[2]
+framesPath = videoPath + ' frames'
+
+cap = cv2.VideoCapture(videoPath)
 lastFrame = int(cap.get(cv2.CAP_PROP_FRAME_COUNT)) - 1
 count = 0
 
 def SaveFrames():
     global count
-    if not os.path.isdir(videopath + ' frames'):
-        os.mkdir(videopath + ' frames')
-    os.chdir(videopath + ' frames')
-        
+    if not os.path.isdir(framesPath):
+        os.mkdir(framesPath)
+    os.chdir(framesPath)
+
+    print("Saving " + str(lastFrame) + " Frames...")
     while True:
         ret, frame = cap.read()
         if count <=lastFrame:
             cv2.imwrite(str(count) + '.jpg', frame)
-            print(str(count) + '   saved')
             count +=1
         else:
             break
@@ -41,45 +47,46 @@ def SaveFrames():
 
 
 def SaveImages():
-    for _frameNum in range(0, lastFrame):
-        
+    print("Saving Images...")
+    os.chdir('..')
+    if not os.path.isdir(imagesPath):
+        os.mkdir(imagesPath)
+    os.chdir(framesPath)
+    
+    for _frameNum in range(0, lastFrame):        
         if len(FrameRects[_frameNum]) > 0:
             image = cv2.imread(str(_frameNum) + '.jpg')
             for rectNum, _rect in enumerate(FrameRects[_frameNum]):
-                x = int((_rect[0][0] + _rect[1][0]) / 2)
-                y = int((_rect[0][1] + _rect[1][1]) / 2)
-                w = int((_rect[0][0] - _rect[1][0]) / 2)
-
-                x1 = int(x - w/2)
-                x2 = int(x + w/2)
-                y1 = int(y - w/2)
-                y2 = int(y + w/2)
                 roi = image[_rect[1][1]:_rect[0][1], _rect[0][0]:_rect[1][0]]
+                os.chdir('..')
+                os.chdir(imagesPath)
                 cv2.imwrite(str(_frameNum) + '_' + str(rectNum) + '.jpg', roi)
-        
+                os.chdir('..')
+                os.chdir(framesPath)
+    print("Finished!")        
+
 
 def ExpandFrames():
     for i in range(0, lastFrame):
         FrameRects.append([])
 
+
 def DeleteRects():
-    for i in hoveringIndexes:
-        print(i)
-        FrameRects[frameNum].remove(i)
-        
-        
+    global hoveringIndexes
+    if len(hoveringIndexes) > 0:
+        for i in hoveringIndexes:
+            FrameRects[frameNum].remove(i)
+    hoveringIndexes = []
+            
 
 def MouseCallback(event, x, y, flags, params):
     global rect, drawing, dx, x1, y1, x2, y2, mouseX, mouseY, hoveringIndexes
 
     if event == cv2.EVENT_MOUSEMOVE:
-        
         hoveringIndexes = []
         for i, _rect in enumerate(FrameRects[frameNum]):
             if _rect[0][0] <= x <= _rect[1][0] and _rect[1][1] <= y <= _rect[0][1]:
                 hoveringIndexes.append(_rect)
-                print(hoveringIndexes)
-
         
         if not drawing:
             x1 = x
@@ -97,7 +104,6 @@ def MouseCallback(event, x, y, flags, params):
     elif event == cv2.EVENT_MBUTTONUP:
         FrameRects[frameNum].append(rect)
         drawing = False
-        print(FrameRects)
 
 
 SaveFrames()
@@ -110,9 +116,7 @@ cv2.imshow('window' , window)
 while True:
     
     window = cv2.imread(str(frameNum) + '.jpg')
-
-
-
+    
     if drawing:
         cv2.rectangle(window ,rect[0] ,rect[1] ,(255,0,128) ,3)
 
@@ -121,11 +125,11 @@ while True:
             cv2.rectangle(window ,_rect[0], _rect[1],(255,204,255) ,3)
         else:
             cv2.rectangle(window ,_rect[0], _rect[1],(0,0,255) ,3)
-            
 
     cv2.imshow('window' , window)
 
     cv2.setMouseCallback('window', MouseCallback)
+    
     k=cv2.waitKey(10) & 0XFF
     if k == a:
         if frameNum > 0:
@@ -134,9 +138,7 @@ while True:
         if frameNum < lastFrame:
             frameNum +=1
     elif k == s:
-        print(hoveringIndexes)
         DeleteRects()
-        print(FrameRects[frameNum])
     elif k==27:    # Esc key to stop
         break
 
