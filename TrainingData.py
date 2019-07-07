@@ -1,3 +1,6 @@
+#to use: python3 TrainingData.py [insert video file here] [insert directory you want your images saved to]
+#Note: program creates directory if you do not already have it
+
 import cv2
 import os
 import sys
