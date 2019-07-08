@@ -137,9 +137,11 @@ while True:
     if k == a:
         if frameNum > 0:
             frameNum -=1
+            print(frameNum)
     elif k == d:
         if frameNum < lastFrame:
             frameNum +=1
+            print(frameNum)
     elif k == s:
         DeleteRects()
     elif k==27:    # Esc key to stop
