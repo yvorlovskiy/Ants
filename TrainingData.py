@@ -68,7 +68,30 @@ def SaveImages():
                 os.chdir(framesPath)
     print("Finished!")        
 
-
+def WriteAnotations():
+    print("Saving Annotations...")
+    os.chdir('..')
+    f = open("annotations.txt", "a+")
+    if not os.path.isdir(imagesPath):
+        os.mkdir(imagesPath)
+    os.chdir(framesPath)
+    
+    for _frameNum in range(0, lastFrame):        
+        if len(FrameRects[_frameNum]) > 0:
+            image = cv2.imread(str(_frameNum) + '.jpg')
+            for rectNum, _rect in enumerate(FrameRects[_frameNum]):
+                os.chdir('..')
+                os.chdir(imagesPath)
+                x = int((_rect[0][0] + _rect[1][0]) / 2)
+                y = int((_rect[0][1] + _rect[1][1]) / 2)
+                w = int((_rect[0][0] - _rect[1][0]) / 2)
+                os.chdir('..')
+                f.write(str(_frameNum) + " " + str(x) + " " + str(y) + " " + str(w) + " " + str(w))
+                f.write('\n')
+                os.chdir(framesPath)
+    f.close()
+    print("Finished!")  
+    
 def ExpandFrames():
     for i in range(0, lastFrame):
         FrameRects.append([])
@@ -147,7 +170,7 @@ while True:
     elif k==27:    # Esc key to stop
         break
 
-SaveImages()
+WriteAnotations()
 
 cv2.destroyAllWindows()
     
