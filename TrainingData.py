@@ -70,25 +70,23 @@ def SaveImages():
 
 def WriteAnotations():
     print("Saving Annotations...")
-    os.chdir('..')
-    f = open("annotations.txt", "a+")
-    if not os.path.isdir(imagesPath):
-        os.mkdir(imagesPath)
-    os.chdir(framesPath)
-    
-    for _frameNum in range(0, lastFrame):        
+    for _frameNum in range(0, lastFrame):
+        if (len(FrameRects[_frameNum]) > 0):
+            f = open(str(_frameNum) + ".txt", "a+")   
         if len(FrameRects[_frameNum]) > 0:
             image = cv2.imread(str(_frameNum) + '.jpg')
             for rectNum, _rect in enumerate(FrameRects[_frameNum]):
-                os.chdir('..')
-                os.chdir(imagesPath)
                 x = int((_rect[0][0] + _rect[1][0]) / 2)
                 y = int((_rect[0][1] + _rect[1][1]) / 2)
-                w = int((_rect[0][0] - _rect[1][0]) / 2)
-                os.chdir('..')
-                f.write(str(_frameNum) + " " + str(x) + " " + str(y) + " " + str(w) + " " + str(w))
+                w = int((_rect[1][0] - _rect[0][0]) / 2)
+
+                xval = x/width
+                yval = y/height
+                wval = w/width
+                hval = w/height
+
+                f.write(str(0) + " " + str(xval) + " " + str(yval) + " " + str(wval) + " " + str(hval))
                 f.write('\n')
-                os.chdir(framesPath)
     f.close()
     print("Finished!")  
     
@@ -122,12 +120,12 @@ def MouseCallback(event, x, y, flags, params):
         dx = abs(x2 - x1)
         rect = [(x1 - dx, y1 + dx), (x1 + dx, y1 - dx)]
     
-    elif event == cv2.cv2.EVENT_MBUTTONDOWN:
+    elif event == cv2.cv2.EVENT_LBUTTONDOWN:
         x1 = x
         y1 = y
         drawing = True
         
-    elif event == cv2.EVENT_MBUTTONUP:
+    elif event == cv2.EVENT_LBUTTONUP:
         FrameRects[frameNum].append(rect)
         drawing = False
 
@@ -142,6 +140,7 @@ cv2.imshow('window' , window)
 while True:
     
     window = cv2.imread(str(frameNum) + '.jpg')
+    height, width = window.shape[:2]
     
     if drawing:
         cv2.rectangle(window ,rect[0] ,rect[1] ,(255,0,128) ,3)
@@ -156,6 +155,8 @@ while True:
 
     cv2.setMouseCallback('window', MouseCallback)
     
+   
+
     k=cv2.waitKey(10) & 0XFF
     if k == a:
         if frameNum > 0:
@@ -167,13 +168,10 @@ while True:
             print(frameNum)
     elif k == s:
         DeleteRects()
+
     elif k==27:    # Esc key to stop
         break
 
-WriteAnotations()
+WriteAnotations() #ANNOTATIONS
 
 cv2.destroyAllWindows()
-    
-    
-
-
