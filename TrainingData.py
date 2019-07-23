@@ -74,14 +74,22 @@ def WriteAnotations():
     print("Saving Annotations...")
     for _frameNum in range(0, lastFrame):
         if (len(FrameRects[_frameNum]) > 0):
+<<<<<<< HEAD
             f = open(str(_frameNum) + ".txt", "a+")
             #anotationCount += 1   
+=======
+            f = open(str(_frameNum) + ".txt", "a+")   
+>>>>>>> d68f03fe7ff9ba19aa161e5ba8e3c1782925063a
         if len(FrameRects[_frameNum]) > 0:
             image = cv2.imread(str(_frameNum) + '.jpg')
             for rectNum, _rect in enumerate(FrameRects[_frameNum]):
                 x = int((_rect[0][0] + _rect[1][0]) / 2)
                 y = int((_rect[0][1] + _rect[1][1]) / 2)
+<<<<<<< HEAD
                 w = int((_rect[1][0] - _rect[0][0]))
+=======
+                w = int((_rect[1][0] - _rect[0][0]) / 2)
+>>>>>>> d68f03fe7ff9ba19aa161e5ba8e3c1782925063a
 
                 xval = x/width
                 yval = y/height
@@ -92,8 +100,11 @@ def WriteAnotations():
                 f.write('\n')
     f.close()
     print("Finished!")  
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> d68f03fe7ff9ba19aa161e5ba8e3c1782925063a
     
 def ExpandFrames():
     for i in range(0, lastFrame):
@@ -125,12 +136,12 @@ def MouseCallback(event, x, y, flags, params):
         dx = abs(x2 - x1)
         rect = [(x1 - dx, y1 + dx), (x1 + dx, y1 - dx)]
     
-    elif event == cv2.cv2.EVENT_MBUTTONDOWN:
+    elif event == cv2.cv2.EVENT_LBUTTONDOWN:
         x1 = x
         y1 = y
         drawing = True
         
-    elif event == cv2.EVENT_MBUTTONUP:
+    elif event == cv2.EVENT_LBUTTONUP:
         FrameRects[frameNum].append(rect)
         drawing = False
 
