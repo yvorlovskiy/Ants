@@ -27,24 +27,25 @@ hoveringIndexes = []
 
 videoPath = args[1]
 #imagesPath = args[2]
-framesPath = 'antdata'
+
+framesPath = '/antdata/JPEGImages/'
+txtPath = 'antdata/Labels'
 
 cap = cv2.VideoCapture(videoPath)
 lastFrame = int(cap.get(cv2.CAP_PROP_FRAME_COUNT)) - 1
 count = 0
+frameSaved = 100
 
 
 def SaveFrames():
     global count
-    if not os.path.isdir(framesPath):
-        os.mkdir(framesPath)
-    os.chdir(framesPath)
+   
 
-    print("Saving " + str(lastFrame) + " Frames...")
+    print('Saving ' + str(frameSaved) + 'Frames out of ' + str(lastFrame))
     while True:
         ret, frame = cap.read()
-        if count <=lastFrame:
-            cv2.imwrite(str(count) + '.jpg', frame)
+        if count <= frameSaved:
+            cv2.imwrite('/antdata/JPEGImages/' + str(count) + '.jpg', frame)
             count +=1
         else:
             break
@@ -71,25 +72,22 @@ def SaveImages():
     print("Finished!")        
 
 def WriteAnotations():
+    
+    if not os.path.isdir(txtPath):
+        os.mkdir(txtPath)
+    os.chdir(txtPath)
+
     print("Saving Annotations...")
     for _frameNum in range(0, lastFrame):
         if (len(FrameRects[_frameNum]) > 0):
-<<<<<<< HEAD
             f = open(str(_frameNum) + ".txt", "a+")
             #anotationCount += 1   
-=======
-            f = open(str(_frameNum) + ".txt", "a+")   
->>>>>>> d68f03fe7ff9ba19aa161e5ba8e3c1782925063a
         if len(FrameRects[_frameNum]) > 0:
             image = cv2.imread(str(_frameNum) + '.jpg')
             for rectNum, _rect in enumerate(FrameRects[_frameNum]):
                 x = int((_rect[0][0] + _rect[1][0]) / 2)
                 y = int((_rect[0][1] + _rect[1][1]) / 2)
-<<<<<<< HEAD
                 w = int((_rect[1][0] - _rect[0][0]))
-=======
-                w = int((_rect[1][0] - _rect[0][0]) / 2)
->>>>>>> d68f03fe7ff9ba19aa161e5ba8e3c1782925063a
 
                 xval = x/width
                 yval = y/height
@@ -100,11 +98,8 @@ def WriteAnotations():
                 f.write('\n')
     f.close()
     print("Finished!")  
-<<<<<<< HEAD
 
 
-=======
->>>>>>> d68f03fe7ff9ba19aa161e5ba8e3c1782925063a
     
 def ExpandFrames():
     for i in range(0, lastFrame):
