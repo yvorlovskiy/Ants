@@ -4,6 +4,7 @@
 import cv2
 import os
 import sys
+import math
 
 args = sys.argv
 
@@ -25,12 +26,13 @@ FrameRects = []
 hoveringIndexes = []
 
 videoPath = args[1]
-imagesPath = args[2]
-framesPath = videoPath + ' frames'
+#imagesPath = args[2]
+framesPath = 'antdata'
 
 cap = cv2.VideoCapture(videoPath)
 lastFrame = int(cap.get(cv2.CAP_PROP_FRAME_COUNT)) - 1
 count = 0
+
 
 def SaveFrames():
     global count
@@ -68,7 +70,31 @@ def SaveImages():
                 os.chdir(framesPath)
     print("Finished!")        
 
+def WriteAnotations():
+    print("Saving Annotations...")
+    for _frameNum in range(0, lastFrame):
+        if (len(FrameRects[_frameNum]) > 0):
+            f = open(str(_frameNum) + ".txt", "a+")
+            #anotationCount += 1   
+        if len(FrameRects[_frameNum]) > 0:
+            image = cv2.imread(str(_frameNum) + '.jpg')
+            for rectNum, _rect in enumerate(FrameRects[_frameNum]):
+                x = int((_rect[0][0] + _rect[1][0]) / 2)
+                y = int((_rect[0][1] + _rect[1][1]) / 2)
+                w = int((_rect[1][0] - _rect[0][0]))
 
+                xval = x/width
+                yval = y/height
+                wval = w/width
+                hval = w/height
+
+                f.write(str(0) + " " + str(xval) + " " + str(yval) + " " + str(wval) + " " + str(hval))
+                f.write('\n')
+    f.close()
+    print("Finished!")  
+
+
+    
 def ExpandFrames():
     for i in range(0, lastFrame):
         FrameRects.append([])
@@ -119,6 +145,7 @@ cv2.imshow('window' , window)
 while True:
     
     window = cv2.imread(str(frameNum) + '.jpg')
+    height, width = window.shape[:2]
     
     if drawing:
         cv2.rectangle(window ,rect[0] ,rect[1] ,(255,0,128) ,3)
@@ -133,22 +160,23 @@ while True:
 
     cv2.setMouseCallback('window', MouseCallback)
     
+   
+
     k=cv2.waitKey(10) & 0XFF
     if k == a:
         if frameNum > 0:
             frameNum -=1
+            print(frameNum)
     elif k == d:
         if frameNum < lastFrame:
             frameNum +=1
+            print(frameNum)
     elif k == s:
         DeleteRects()
+
     elif k==27:    # Esc key to stop
         break
 
-SaveImages()
+WriteAnotations() #ANNOTATIONS
 
 cv2.destroyAllWindows()
-    
-    
-
-
