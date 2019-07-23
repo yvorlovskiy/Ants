@@ -1,6 +1,0 @@
-classes = 1
-train  = /Users/neerajmac/Desktop/learnopencv/YOLOv3-Training-Snowman-Detector/snowman_train.txt
-valid  = /Users/neerajmac/Desktop/learnopencv/YOLOv3-Training-Snowman-Detector/snowman_test.txt
-names = /Users/neerajmac/Desktop/learnopencv/YOLOv3-Training-Snowman-Detector/classes.names
-backup = /Users/neerajmac/Desktop/learnopencv/YOLOv3-Training-Snowman-Detector/weights/
-
