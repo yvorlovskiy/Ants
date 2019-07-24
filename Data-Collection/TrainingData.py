@@ -1,4 +1,4 @@
-#to use: python3 TrainingData.py [insert video file here] [insert directory you want your images saved to]
+ #to use: python3 TrainingData.py [insert video file here] [insert directory you want your images saved to]
 #Note: program creates directory if you do not already have it
 
 import cv2
@@ -29,6 +29,7 @@ hoveringIndexes = []
 videoPath = args[1]
 #imagesPath = args[2]
 framesPath = 'antdata/JPEGImages'
+# framesPath = '/Users/yuryorlovskiy/Dev/Ants/AntsGit/Data-Collection/antdata/JPEGImages'
 txtPath = '/Users/yuryorlovskiy/Dev/Ants/AntsGit/Data-Collection/antdata/Labels'
 finalpath = '/Users/yuryorlovskiy/Dev/Ants/AntsGit/Data-Collection/antdata/'
 
