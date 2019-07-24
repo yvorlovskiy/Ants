@@ -5,8 +5,8 @@ import sys
 
 def split_data_set(image_dir):
 
-    f_val = open("snowman_test.txt", 'w')
-    f_train = open("snowman_train.txt", 'w')
+    f_val = open("ants_test.txt", 'w')
+    f_train = open("ants_train.txt", 'w')
     
     path, dirs, files = next(os.walk(image_dir))
     data_size = len(files)
