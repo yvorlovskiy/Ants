@@ -27,13 +27,13 @@ FrameRects = []
 hoveringIndexes = []
 
 videoPath = args[1]
-#imagesPath = args[2]
 
+#Getting current directory path
 cwd = os.getcwd()
 print(cwd)
 
+#training files paths
 framesPath = str(cwd) + '/antdata/JPEGImages'
-# framesPath = '/Users/yuryorlovskiy/Dev/Ants/AntsGit/Data-Collection/antdata/JPEGImages'
 txtPath = str(cwd) +'/antdata/Labels'
 finalpath = str(cwd) + '/antdata/'
 
@@ -41,7 +41,7 @@ cap = cv2.VideoCapture(videoPath)
 lastFrame = int(cap.get(cv2.CAP_PROP_FRAME_COUNT)) - 1
 count = 0
 
-
+#saves frames 
 def SaveFrames():
     global count
     if not os.path.isdir(framesPath):
@@ -58,7 +58,7 @@ def SaveFrames():
             break
     cap.release()
 
-
+#saves images
 def SaveImages():
     print("Saving Images...")
     os.chdir('..')
@@ -78,6 +78,7 @@ def SaveImages():
                 os.chdir(framesPath)
     print("Finished!")        
 
+#writes annotations in the yolo format
 def WriteAnotations():
     if not os.path.isdir(txtPath):
         os.mkdir(txtPath)
@@ -112,6 +113,7 @@ def ExpandFrames():
         FrameRects.append([])
 
 
+#deletes incorrect rectangles
 def DeleteRects():
     global hoveringIndexes
     if len(hoveringIndexes) > 0:
@@ -120,6 +122,7 @@ def DeleteRects():
     hoveringIndexes = []
             
 
+#saves rectangle points
 def MouseCallback(event, x, y, flags, params):
     global rect, drawing, dx, x1, y1, x2, y2, mouseX, mouseY, hoveringIndexes
 
@@ -195,4 +198,5 @@ cv2.destroyAllWindows()
 
 os.chdir(finalpath)
 
+#makes train and test files
 import TrainTest
