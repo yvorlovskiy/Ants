@@ -28,10 +28,14 @@ hoveringIndexes = []
 
 videoPath = args[1]
 #imagesPath = args[2]
-framesPath = 'antdata/JPEGImages'
+
+cwd = os.getcwd()
+print(cwd)
+
+framesPath = str(cwd) + '/antdata/JPEGImages'
 # framesPath = '/Users/yuryorlovskiy/Dev/Ants/AntsGit/Data-Collection/antdata/JPEGImages'
-txtPath = '/Users/yuryorlovskiy/Dev/Ants/AntsGit/Data-Collection/antdata/Labels'
-finalpath = '/Users/yuryorlovskiy/Dev/Ants/AntsGit/Data-Collection/antdata/'
+txtPath = str(cwd) +'/antdata/Labels'
+finalpath = str(cwd) + '/antdata/'
 
 cap = cv2.VideoCapture(videoPath)
 lastFrame = int(cap.get(cv2.CAP_PROP_FRAME_COUNT)) - 1
