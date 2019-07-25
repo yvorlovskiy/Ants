@@ -26,12 +26,12 @@ for pathAndFilename in glob.iglob(os.path.join(current_dir, "*.txt")):
         
 """
 # This may also work
-train_image_amount = round((1-percentage_test)*len(glob.glob(os.path.join(current_dir, "*.txt")))/100)
 images = glob.glob(os.path.join(current_dir, "*.txt"))
 
 random.seed(4)
 random.shuffle(images)
 
+train_image_amount = round((1-percentage_test)*len(glob.glob(os.path.join(current_dir, "*.txt")))/100)
 train_images = images[0:train_image_amount]
 test_images = images[:train_image_amount]
 
