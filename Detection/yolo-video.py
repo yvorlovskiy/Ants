@@ -1,5 +1,5 @@
 # USAGE
-# python yolo_video.py --input videos/airport.mp4 --output output/airport_output.avi --yolo yolo-coco
+# python yolo_video.py --input videos/airport.mp4 --output output/airport_output.avi --yolo yolo
 
 # import the necessary packages
 import numpy as np
@@ -12,7 +12,7 @@ import PySimpleGUI as sg
 
 i_vid = r'videos\car_chase_01.mp4'
 # o_vid = r'videos\car_chase_01_out.mp4'
-y_path = r'yolo-coco'
+y_path = r'yolo'
 layout = 	[
 		[sg.Text('YOLO Video Player', size=(18,1), font=('Any',18),text_color='#1c86ee' ,justification='left')],
 		[sg.Text('Path to input video'), sg.In(i_vid,size=(40,1), key='input'), sg.FileBrowse()],
@@ -37,8 +37,8 @@ win.Close()
 
 # imgbytes = cv2.imencode('.png', image)[1].tobytes()  # ditto
 
-# load the COCO class labels our YOLO model was trained on
-labelsPath = os.path.sep.join([args["yolo"], "coco.names"])
+# load the class labels our YOLO model was trained on
+labelsPath = os.path.sep.join([args["yolo"], "obj.names"])
 LABELS = open(labelsPath).read().strip().split("\n")
 
 # initialize a list of colors to represent each possible class label
@@ -79,6 +79,14 @@ except:
 
 # loop over frames from the video file stream
 win_started = False
+
+def SaveData():
+    with open('ant_data.csv', mode='w') as employee_file:
+    employee_writer = csv.writer(employee_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+    for i in range(0, len(boxes)):
+        employee_writer.writerow([str(boxes[i][0]), str(boxes[i][1]), str(boxes[i][2]), str(boxes[i][3]), str(classID[i])])
+    
+
 while True:
 	# read the next frame from the file
 	(grabbed, frame) = vs.read()
@@ -198,7 +206,7 @@ while True:
 	if event is None or event == 'Exit':
 		break
 
-
+SaveData() 
 win.Close()
 
 # release the file pointers
