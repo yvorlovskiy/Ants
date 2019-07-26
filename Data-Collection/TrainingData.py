@@ -52,8 +52,8 @@ cwd = os.path.dirname(os.path.abspath(__file__))
 print(cwd)
 
 #training files paths
-framesPath = str(cwd) + '/antdata/'
-txtPath = str(cwd) +'/antdata/'
+framesPath = str(cwd) + '/antdata/JPEGImages'
+txtPath = str(cwd) +'/antdata/Labels'
 finalpath = str(cwd) + '/antdata/'
 
 cap = cv2.VideoCapture(videoPath)

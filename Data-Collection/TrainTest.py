@@ -1,9 +1,11 @@
 import glob, os, random
 # Current directory
 
-current_dir = os.path.dirname(os.path.abspath(__file__))
+cwd = os.path.dirname(os.path.abspath(__file__))
+current_dir = str(cwd) + '/antdata/Labels'
+os.chdir(current_dir)
 print(current_dir)
-current_dir = 'antdata'
+
 
 # Percentage of images to be used for the test set
 percentage_test = 10
@@ -23,7 +25,16 @@ for pathAndFilename in glob.iglob(os.path.join(current_dir, "*.txt")):
     else:
         file_train.write(current_dir + "/" + title + '.jpg' + "\n")
         counter = counter + 1
-        
+
+final_dir1 = str(cwd) + '/ant_train.txt'
+final_dir2 = str(cwd) + '/ant_test.txt'
+
+os.rename(str(current_dir) + '/ant_train.txt', str(final_dir1))
+os.rename(str(current_dir) + '/ant_test.txt', str(final_dir2))
+print('moving files from' + str(current_dir) + 'to' + str(cwd))
+
+
+
 """
 # This may also work
 images = glob.glob(os.path.join(current_dir, "*.txt"))
