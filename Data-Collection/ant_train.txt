@@ -1,0 +1,12 @@
+/Users/yuryorlovskiy/Dev/Ants/Data-Collection/antdata/Labels/ant_test.jpg
+/Users/yuryorlovskiy/Dev/Ants/Data-Collection/antdata/Labels/ant_train.jpg
+/Users/yuryorlovskiy/Dev/Ants/Data-Collection/antdata/Labels/10.jpg
+/Users/yuryorlovskiy/Dev/Ants/Data-Collection/antdata/Labels/9.jpg
+/Users/yuryorlovskiy/Dev/Ants/Data-Collection/antdata/Labels/8.jpg
+/Users/yuryorlovskiy/Dev/Ants/Data-Collection/antdata/Labels/5.jpg
+/Users/yuryorlovskiy/Dev/Ants/Data-Collection/antdata/Labels/4.jpg
+/Users/yuryorlovskiy/Dev/Ants/Data-Collection/antdata/Labels/6.jpg
+/Users/yuryorlovskiy/Dev/Ants/Data-Collection/antdata/Labels/7.jpg
+/Users/yuryorlovskiy/Dev/Ants/Data-Collection/antdata/Labels/2.jpg
+/Users/yuryorlovskiy/Dev/Ants/Data-Collection/antdata/Labels/0.jpg
+/Users/yuryorlovskiy/Dev/Ants/Data-Collection/antdata/Labels/1.jpg
