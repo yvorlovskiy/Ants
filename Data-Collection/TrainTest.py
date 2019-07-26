@@ -1,10 +1,9 @@
 import glob, os, random
 # Current directory
 
-cwd = os.path.dirname(os.path.abspath(__file__))
-current_dir = str(cwd) + '/antdata/'
-save_dir = str(cwd) + '/antdata/'
-os.chdir(current_dir)
+current_dir = 'antdata/'
+
+
 print(current_dir)
 
 
@@ -22,17 +21,11 @@ for pathAndFilename in glob.iglob(os.path.join(current_dir, "*.txt")):
     title, ext = os.path.splitext(os.path.basename(pathAndFilename))
     if counter == index_test:
             counter = 1
-            file_test.write(save_dir + "/" + title + '.jpg' + "\n")
+            file_test.write(current_dir + "/" + title + '.jpg' + "\n")
     else:
-        file_train.write(save_dir + "/" + title + '.jpg' + "\n")
+        file_train.write(current_dir + "/" + title + '.jpg' + "\n")
         counter = counter + 1
 
-final_dir1 = str(cwd) + '/ant_train.txt'
-final_dir2 = str(cwd) + '/ant_test.txt'
-
-os.rename(str(current_dir) + '/ant_train.txt', str(final_dir1))
-os.rename(str(current_dir) + '/ant_test.txt', str(final_dir2))
-print('moving files from' + str(current_dir) + 'to' + str(cwd))
 
 
 
