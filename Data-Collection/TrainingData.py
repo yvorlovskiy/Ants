@@ -1,12 +1,24 @@
  #to use: python3 TrainingData.py [insert video file here] [insert directory you want your images saved to]
 #Note: program creates directory if you do not already have it
 
-import cv2
-import os
-import sys
-import math
+import cv2, os, sys, math, argparse, random
 
-args = sys.argv
+def checkVal(value):
+    ivalue = int(value)
+    if ivalue <= 0:
+        raise argparse.ArgumentTypeError("number of objects must be above 0")
+    return value
+
+parser = argparse.ArgumentParser(description='GUI to quickly annotate video footage for YOLO3.')
+
+parser.add_argument('videoPath', metavar='v', type=str, nargs=1, 
+                    help='file name or file path')
+
+parser.add_argument('numObjects', metavar='o', type=int, nargs='?', 
+                    help='number of objects to train for', default = 1)#,
+                    #type=checkVal)
+
+args = parser.parse_args()
 
 drawing = False
 
@@ -16,6 +28,8 @@ frameSaved = 100
 a = 97
 d = 100
 s = 115
+one = 49
+two = 50
 
 x1=0
 y1=0
@@ -26,10 +40,15 @@ rect=[]
 FrameRects = []
 hoveringIndexes = []
 
-videoPath = args[1]
+#print(args.video)
+videoPath = str(args.videoPath)[2:-2]
+numObjects = args.numObjects - 1
+currentObject = 0
+
+objectColors = [[random.randrange(0,255), random.randrange(0,255), random.randrange(0,255)] for i in range(0, numObjects+1)]
 
 #Getting current directory path
-cwd = os.getcwd()
+cwd = os.path.dirname(os.path.abspath(__file__))
 print(cwd)
 
 #training files paths
@@ -92,16 +111,16 @@ def WriteAnotations():
         if len(FrameRects[_frameNum]) > 0:
             image = cv2.imread(str(_frameNum) + '.jpg')
             for rectNum, _rect in enumerate(FrameRects[_frameNum]):
-                x = int((_rect[0][0] + _rect[1][0]) / 2)
-                y = int((_rect[0][1] + _rect[1][1]) / 2)
-                w = int((_rect[1][0] - _rect[0][0]))
+                x = int((_rect[0][0][0] + _rect[0][1][0]) / 2)
+                y = int((_rect[0][0][1] + _rect[0][1][1]) / 2)
+                w = int((_rect[0][1][0] - _rect[0][0][0]))
 
                 xval = x/width
                 yval = y/height
                 wval = w/width
                 hval = w/height
 
-                f.write(str(0) + " " + str(xval) + " " + str(yval) + " " + str(wval) + " " + str(hval))
+                f.write(str(_rect[1]) + " " + str(xval) + " " + str(yval) + " " + str(wval) + " " + str(hval))
                 f.write('\n')
     f.close()
     print("Finished!")  
@@ -120,7 +139,13 @@ def DeleteRects():
         for i in hoveringIndexes:
             FrameRects[frameNum].remove(i)
     hoveringIndexes = []
-            
+
+def iterateObject(s):
+    global currentObject
+    if s == 1 and currentObject != 0:
+        currentObject -= 1
+    elif s ==2 and currentObject != numObjects:
+        currentObject += 1
 
 #saves rectangle points
 def MouseCallback(event, x, y, flags, params):
@@ -129,7 +154,7 @@ def MouseCallback(event, x, y, flags, params):
     if event == cv2.EVENT_MOUSEMOVE:
         hoveringIndexes = []
         for i, _rect in enumerate(FrameRects[frameNum]):
-            if _rect[0][0] <= x <= _rect[1][0] and _rect[1][1] <= y <= _rect[0][1]:
+            if _rect[0][0][0] <= x <= _rect[0][1][0] and _rect[0][1][1] <= y <= _rect[0][0][1]:
                 hoveringIndexes.append(_rect)
         
         if not drawing:
@@ -146,7 +171,7 @@ def MouseCallback(event, x, y, flags, params):
         drawing = True
         
     elif event == cv2.EVENT_LBUTTONUP:
-        FrameRects[frameNum].append(rect)
+        FrameRects[frameNum].append([rect, currentObject])
         drawing = False
 
 
@@ -167,9 +192,9 @@ while True:
 
     for _rect in FrameRects[frameNum]:
         if _rect in hoveringIndexes:
-            cv2.rectangle(window ,_rect[0], _rect[1],(255,204,255) ,3)
+            cv2.rectangle(window ,_rect[0][0], _rect[0][1],(255,204,255) ,3)
         else:
-            cv2.rectangle(window ,_rect[0], _rect[1],(0,0,255) ,3)
+            cv2.rectangle(window ,_rect[0][0], _rect[0][1],objectColors[_rect[1]] ,3)
 
     cv2.imshow('window' , window)
 
@@ -188,6 +213,14 @@ while True:
             print(frameNum)
     elif k == s:
         DeleteRects()
+
+    elif k == one:
+        iterateObject(1)
+        print(currentObject, " objectNum")
+
+    elif k == two:
+        iterateObject(2)
+        print(currentObject, " objectNum")
 
     elif k==27:    # Esc key to stop
         break
