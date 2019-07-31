@@ -1,3 +1,4 @@
 *.mov
 *.mts
 *.weights
+*.DS_Store
