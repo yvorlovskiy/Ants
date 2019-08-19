@@ -97,6 +97,12 @@ def SaveImages():
                 os.chdir(framesPath)
     print("Finished!")        
 
+ObjectDict = {
+    0: "black-ant",
+    1: "blue-ant",
+    2: "red-ant"
+}
+
 #writes annotations in the yolo format
 def WriteAnotations():
     if not os.path.isdir(txtPath):
@@ -106,8 +112,10 @@ def WriteAnotations():
     print("Saving Annotations...")
     for _frameNum in range(0, lastFrame):
         if (len(FrameRects[_frameNum]) > 0):
-            f = open(str(_frameNum) + ".txt", "a+")
-            #anotationCount += 1   
+           for rectNum, _rect in enumerate(FrameRects[_frameNum]):
+            name = _rect[1] 
+            name = ObjectDict[name]
+            f = open(str(name) + str(_frameNum) + ".txt", "a+") 
         if len(FrameRects[_frameNum]) > 0:
             image = cv2.imread(str(_frameNum) + '.jpg')
             for rectNum, _rect in enumerate(FrameRects[_frameNum]):
