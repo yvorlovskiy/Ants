@@ -1,5 +1,8 @@
  #to use: python3 TrainingData.py [insert video file here] [insert directory you want your images saved to]
 #Note: program creates directory if you do not already have it
+# 0 black ant 
+#1 blue ant
+#2 red ant
 
 import cv2, os, sys, math, argparse, random
 
@@ -18,12 +21,16 @@ parser.add_argument('numObjects', metavar='o', type=int, nargs='?',
                     help='number of objects to train for', default = 1)#,
                     #type=checkVal)
 
+parser.add_argument('numFrames', metavar='o', type=int, nargs='?', 
+                    help='number of objects to train for', default = 800)#,
+                    #type=checkVal)
+
 args = parser.parse_args()
 
 drawing = False
 
 frameNum = 0
-frameSaved = 100
+
 
 a = 97
 d = 100
@@ -45,20 +52,22 @@ videoPath = str(args.videoPath)[2:-2]
 numObjects = args.numObjects - 1
 currentObject = 0
 
-objectColors = [[random.randrange(0,255), random.randrange(0,255), random.randrange(0,255)] for i in range(0, numObjects+1)]
+objectColors = [[0,0,0], [255,0,0], [0,0,255]]
 
 #Getting current directory path
 cwd = os.path.dirname(os.path.abspath(__file__))
 print(cwd)
 
 #training files paths
-framesPath = str(cwd) + '/antdata/'
-txtPath = str(cwd) +'/antdata/'
-finalpath = str(cwd) + '/antdata/'
+framesPath = str(cwd) + '/day_limotopum/'
+txtPath = str(cwd) +'/day_limotopum/'
+finalpath = str(cwd) + '/day_limotopum/'
 
 cap = cv2.VideoCapture(videoPath)
 lastFrame = int(cap.get(cv2.CAP_PROP_FRAME_COUNT)) - 1
+
 count = 0
+frameSaved = args.numFrames
 
 #saves frames 
 def SaveFrames():
@@ -67,11 +76,14 @@ def SaveFrames():
         os.mkdir(framesPath)
     os.chdir(framesPath)
 
+    
     print("Saving " + str(frameSaved) + " Frames out of " + str(lastFrame))
     while True:
         ret, frame = cap.read()
+         
+        
         if count <=frameSaved:
-            cv2.imwrite(str(count) + '.jpg', frame)
+            cv2.imwrite('soil' + str(count) + '.jpg', frame)
             count +=1
         else:
             break
@@ -115,9 +127,9 @@ def WriteAnotations():
            for rectNum, _rect in enumerate(FrameRects[_frameNum]):
             name = _rect[1] 
             name = ObjectDict[name]
-            f = open(str(name) + str(_frameNum) + ".txt", "a+") 
+            f = open('soil' + str(_frameNum) + ".txt", "a+") 
         if len(FrameRects[_frameNum]) > 0:
-            image = cv2.imread(str(_frameNum) + '.jpg')
+            image = cv2.imread('soil' + str(_frameNum) + '.jpg')
             for rectNum, _rect in enumerate(FrameRects[_frameNum]):
                 x = int((_rect[0][0][0] + _rect[0][1][0]) / 2)
                 y = int((_rect[0][0][1] + _rect[0][1][1]) / 2)
@@ -186,13 +198,13 @@ def MouseCallback(event, x, y, flags, params):
 SaveFrames()
 ExpandFrames()
 
-window = cv2.imread(str(frameNum) + '.jpg')
+window = cv2.imread('soil' + str(frameNum) + '.jpg')
 cv2.imshow('window' , window)
 
 
 while True:
     
-    window = cv2.imread(str(frameNum) + '.jpg')
+    window = cv2.imread('soil' + str(frameNum) + '.jpg')
     height, width = window.shape[:2]
     
     if drawing:
